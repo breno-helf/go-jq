@@ -57,8 +57,11 @@ func (jq *JQ) Close() {
 // JQ APIs
 
 func (jq *JQ) compile(program string) error {
-	_ = C.jq_compile(jq.state, C.CString(program))
-	return nil
+	if rc := C.jq_compile(jq.state, C.CString(program)); rc == 0 {
+		return errors.New("Unable to compile jq filter")
+	} else {
+		return nil
+	}
 }
 
 func (jq *JQ) start(jv C.jv) {
